@@ -1,0 +1,21 @@
+backend/python/app/connectors/core/factory/connector_factory.py
+  s_7919654ee3b3ae::t_86190dfca8a5d7 149
+backend/python/tests/unit/connectors/core/test_connector_factory.py
+  s_7919654ee3b3ae::t_dcd6ea6329d629 8-11,96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4f4f145f3bac330ab03875325173010783a71ba4",
+  "prompts": {},
+  "sessions": {
+    "s_7919654ee3b3ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0f0ab-2b57-7d22-89f8-1d57be6ca947",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "vaibhav-sharma-21 <vsharma2@g2.com>"
+    }
+  }
+}

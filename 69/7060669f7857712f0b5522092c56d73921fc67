@@ -1,0 +1,19 @@
+.github/workflows/publish-development-image.yml
+  s_7919654ee3b3ae::t_fc7634d5943a53 1-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "697060669f7857712f0b5522092c56d73921fc67",
+  "prompts": {},
+  "sessions": {
+    "s_7919654ee3b3ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0f0ab-2b57-7d22-89f8-1d57be6ca947",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "vaibhav-sharma-21 <vsharma2@g2.com>"
+    }
+  }
+}

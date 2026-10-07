@@ -1,0 +1,22 @@
+backend/python/app/connectors/sources/snowflake/connector.py
+  s_7919654ee3b3ae::t_22025c7a9ae1d8 413-414,423-424,504-507,3139-3140,3150-3151
+backend/python/tests/unit/connectors/core/test_connector_factory.py
+  s_7919654ee3b3ae::t_22025c7a9ae1d8 313-334
+  s_7919654ee3b3ae::t_b7d864c7d85337 312
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "219195bd82ab47bccb27444004889d99a362e07d",
+  "prompts": {},
+  "sessions": {
+    "s_7919654ee3b3ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0f0ab-2b57-7d22-89f8-1d57be6ca947",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "vaibhav-sharma-21 <vsharma2@g2.com>"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+backend/python/app/connectors/core/base/token_service/token_refresh_service.py
+  s_cd14e967ea3689::t_54c8dedea9a2a0 426-431,465-468,537-542
+  s_cd14e967ea3689::t_f735f274bcb55f 486-488
+backend/python/app/connectors/sources/salesforce/connector.py
+  s_cd14e967ea3689::t_54c8dedea9a2a0 28,752,1005-1011,6402
+backend/python/app/utils/oauth_config.py
+  s_cd14e967ea3689::t_54c8dedea9a2a0 147-152,185-191
+backend/python/tests/unit/utils/test_oauth_config.py
+  s_cd14e967ea3689::t_54c8dedea9a2a0 274-280,392-420
+  s_cd14e967ea3689::t_28cf59397b7e61 421
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8d3fed8b48a985a4f99c16d8f2f534dbea8d5da3",
+  "prompts": {},
+  "sessions": {
+    "s_cd14e967ea3689": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1626e-358a-77f2-86b7-bfaec50a7731",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "vaibhav-sharma-21 <vsharma2@g2.com>"
+    }
+  }
+}

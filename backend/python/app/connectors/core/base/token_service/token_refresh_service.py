@@ -417,6 +417,11 @@ class TokenRefreshService:
             or shared_oauth_config.get(AuthFieldKeys.TOKEN_URL, ""),
             AuthFieldKeys.REDIRECT_URI: shared_oauth_config.get(AuthFieldKeys.REDIRECT_URI, ""),
         }
+        if connector_type.replace(" ", "").lower() == "snowflake":
+            from app.connectors.sources.snowflake.oauth_urls import ACCOUNT_IDENTIFIER_KEY
+
+            if config_data.get(ACCOUNT_IDENTIFIER_KEY):
+                oauth_flow_config[ACCOUNT_IDENTIFIER_KEY] = config_data[ACCOUNT_IDENTIFIER_KEY]
 
         # Self-managed connectors (GitLab EE, ServiceNow, etc.) keep the host in
         # config.instanceUrl. Propagate it here so get_oauth_config() can
@@ -790,6 +795,15 @@ class TokenRefreshService:
             connector_type,
             auth_config
         )
+        if connector_type.replace(" ", "").lower() == "snowflake":
+            from app.connectors.sources.snowflake.oauth_urls import (
+                ACCOUNT_IDENTIFIER_KEY,
+                pin_snowflake_oauth_urls,
+            )
+
+            if auth_config.get(ACCOUNT_IDENTIFIER_KEY):
+                oauth_flow_config[ACCOUNT_IDENTIFIER_KEY] = auth_config[ACCOUNT_IDENTIFIER_KEY]
+            pin_snowflake_oauth_urls(oauth_flow_config)
         oauth_config = get_oauth_config(oauth_flow_config)
 
         from app.connectors.core.base.token_service.oauth_service import OAuthProvider

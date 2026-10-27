@@ -407,6 +407,8 @@ class SnowflakeConnector(BaseConnector):
         data_store_provider: DataStoreProvider,
         config_service: ConfigurationService,
         connector_id: str,
+        scope: str = ConnectorScope.PERSONAL.value,
+        created_by: str = "",
     ) -> None:
         super().__init__(
             SnowflakeApp(connector_id),
@@ -415,6 +417,8 @@ class SnowflakeConnector(BaseConnector):
             data_store_provider,
             config_service,
             connector_id,
+            scope,
+            created_by,
         )
         self.connector_id = connector_id
         self.connector_name = Connectors.SNOWFLAKE
@@ -434,8 +438,7 @@ class SnowflakeConnector(BaseConnector):
         self.account_identifier: Optional[str] = None
         self.batch_size = 100
         self.rate_limiter = AsyncLimiter(25, 1)
-        self.connector_scope: Optional[str] = None
-        self.created_by: Optional[str] = None
+        self.connector_scope: Optional[str] = scope
         self.sync_filters: FilterCollection = FilterCollection()
         self.indexing_filters: FilterCollection = FilterCollection()
         self._record_id_cache: Dict[str, str] = {}
@@ -496,8 +499,16 @@ class SnowflakeConnector(BaseConnector):
                 self.logger.error("Missing accountIdentifier in configuration")
                 return False
 
-            self.connector_scope = config.get("scope", ConnectorScope.PERSONAL.value)
-            self.created_by = config.get("created_by")
+            self.connector_scope = (
+                config.get("scope")
+                or auth_config.get("connectorScope")
+                or self.scope
+            )
+            self.created_by = (
+                config.get("created_by")
+                or config.get("createdBy")
+                or self.created_by
+            )
 
             # Determine authentication method
             pat_token = auth_config.get("patToken")
@@ -3130,6 +3141,8 @@ class SnowflakeConnector(BaseConnector):
         config_service: ConfigurationService,
         connector_id: str,
         data_entities_processor,
+        scope: str = ConnectorScope.PERSONAL.value,
+        created_by: str = "",
         **kwargs,
     ) -> "SnowflakeConnector":
         return cls(
@@ -3138,4 +3151,6 @@ class SnowflakeConnector(BaseConnector):
             data_store_provider,
             config_service,
             connector_id,
+            scope,
+            created_by,
         )

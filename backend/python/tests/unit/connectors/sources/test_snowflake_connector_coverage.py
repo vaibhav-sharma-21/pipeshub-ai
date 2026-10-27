@@ -88,7 +88,7 @@ def _statement_failure(
 
 
 def _make_connector() -> SnowflakeConnector:
-    """Construct a SnowflakeConnector without running __init__ (which takes scope/created_by)."""
+    """Construct a SnowflakeConnector without initializing external dependencies."""
     c = SnowflakeConnector.__new__(SnowflakeConnector)
     c.logger = logging.getLogger("test.snowflake")
     c.logger.setLevel(logging.CRITICAL)
@@ -1511,17 +1511,26 @@ class TestRealInit:
         dsp = MagicMock()
         config_service = MagicMock()
 
-        def _fake_base_init(self, app, logger, data_entities_processor,
-                            data_store_provider, config_service, connector_id):
+        def _fake_base_init(
+            self,
+            app,
+            logger,
+            data_entities_processor,
+            data_store_provider,
+            config_service,
+            connector_id,
+            scope,
+            created_by,
+        ):
             self.logger = logger
             self.data_entities_processor = data_entities_processor
             self.data_store_provider = data_store_provider
             self.config_service = config_service
             self.connector_id = connector_id
             self.app = app
+            self.scope = scope
+            self.created_by = created_by
 
-        # BaseConnector.__init__ currently requires extra args not forwarded by
-        # SnowflakeConnector.__init__; patch it so we can exercise the body.
         with patch(
             "app.connectors.sources.snowflake.connector.BaseConnector.__init__",
             new=_fake_base_init,
@@ -1532,7 +1541,15 @@ class TestRealInit:
         ) as app_cls:
             sp_cls.return_value = MagicMock()
             app_cls.return_value = MagicMock()
-            c = SnowflakeConnector(logger, dep, dsp, config_service, "conn-123")
+            c = SnowflakeConnector(
+                logger,
+                dep,
+                dsp,
+                config_service,
+                "conn-123",
+                scope="team",
+                created_by="user-123",
+            )
 
         assert c.connector_id == "conn-123"
         assert c.connector_name == Connectors.SNOWFLAKE
@@ -1541,8 +1558,9 @@ class TestRealInit:
         assert c.warehouse is None
         assert c.account_identifier is None
         assert c.batch_size == 100
-        assert c.connector_scope is None
-        assert c.created_by is None
+        assert c.connector_scope == "team"
+        assert c.scope == "team"
+        assert c.created_by == "user-123"
         assert isinstance(c.sync_filters, FilterCollection)
         assert c._record_id_cache == {}
         assert isinstance(c.sync_stats, SyncStats)
@@ -1562,10 +1580,12 @@ class TestInitAuthSuccess:
     async def test_init_oauth_success(self) -> None:
         c = _make_connector()
         c.config_service.get_config.return_value = {
-            "auth": {"accountIdentifier": "acct", "warehouse": "WH"},
+            "auth": {
+                "accountIdentifier": "acct",
+                "warehouse": "WH",
+                "connectorScope": "team",
+            },
             "credentials": {"access_token": "tok"},
-            "scope": "PERSONAL",
-            "created_by": "u",
         }
         with patch(
             "app.connectors.sources.snowflake.connector.SnowflakeOAuthConfig"
@@ -1587,6 +1607,9 @@ class TestInitAuthSuccess:
         assert ok is True
         assert c.data_source == "ds"
         assert c.data_fetcher == "df"
+        assert c.connector_scope == "team"
+        assert c.scope == "PERSONAL"
+        assert c.created_by == "user-1"
 
 
 # ===========================================================================
@@ -2701,14 +2724,25 @@ class TestCreateConnector:
     async def test_create_connector_instantiates(self) -> None:
         from app.connectors.sources.snowflake.connector import SnowflakeConnector
 
-        def _fake_base_init(self, app, logger, data_entities_processor,
-                            data_store_provider, config_service, connector_id):
+        def _fake_base_init(
+            self,
+            app,
+            logger,
+            data_entities_processor,
+            data_store_provider,
+            config_service,
+            connector_id,
+            scope,
+            created_by,
+        ):
             self.logger = logger
             self.data_entities_processor = data_entities_processor
             self.data_store_provider = data_store_provider
             self.config_service = config_service
             self.connector_id = connector_id
             self.app = app
+            self.scope = scope
+            self.created_by = created_by
 
         with patch(
             "app.connectors.sources.snowflake.connector.BaseConnector.__init__",
@@ -2726,10 +2760,14 @@ class TestCreateConnector:
                 data_store_provider=MagicMock(),
                 config_service=MagicMock(),
                 connector_id="conn-xyz",
+                scope="team",
+                created_by="user-xyz",
                 data_entities_processor=processor,
             )
         assert isinstance(conn, SnowflakeConnector)
         assert conn.connector_id == "conn-xyz"
+        assert conn.scope == "team"
+        assert conn.created_by == "user-xyz"
 
 
 # ===========================================================================

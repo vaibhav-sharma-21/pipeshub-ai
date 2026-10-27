@@ -1,0 +1,27 @@
+backend/python/app/connectors/core/base/token_service/token_refresh_service.py
+  s_40b701aefc7a64::t_ae5271d5b48f6c 798,804-806
+  s_40b701aefc7a64::t_9963a7daf2d950 420-424,799-803
+backend/python/tests/unit/connectors/sources/test_snowflake_oauth_urls.py
+  s_40b701aefc7a64::t_ae5271d5b48f6c 15-19,111
+backend/python/app/connectors/api/router.py
+  s_40b701aefc7a64::t_ae5271d5b48f6c 108,5759-5766
+  s_40b701aefc7a64::t_2c5bfc6f7a8714 5767
+scripts/connector_coverage_baseline.json
+  s_40b701aefc7a64::t_275668f72d116b 4,19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8ce3029bdfdf66df0fde96e26db0504cdfe3de58",
+  "prompts": {},
+  "sessions": {
+    "s_40b701aefc7a64": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a17c0f-2e63-74e1-a36b-ca9f0d880e87",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "vaibhav-sharma-21 <vsharma2@g2.com>"
+    }
+  }
+}

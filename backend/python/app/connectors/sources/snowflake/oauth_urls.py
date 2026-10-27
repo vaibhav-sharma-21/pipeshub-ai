@@ -10,7 +10,6 @@ from typing import Any
 from urllib.parse import urlparse
 
 from app.connectors.core.constants import AuthFieldKeys
-from app.utils.oauth_config import OAuthUrlRule, register_oauth_url_rule
 
 ACCOUNT_IDENTIFIER_KEY = "accountIdentifier"
 SNOWFLAKE_ACCOUNT_DOMAIN = ".snowflakecomputing.com"
@@ -68,13 +67,3 @@ def pin_snowflake_oauth_urls(flow_config: dict[str, Any]) -> None:
     host = snowflake_account_host(flow_config)
     flow_config[AuthFieldKeys.AUTHORIZE_URL] = f"https://{host}/oauth/authorize"
     flow_config[AuthFieldKeys.TOKEN_URL] = f"https://{host}/oauth/token-request"
-
-
-register_oauth_url_rule(
-    "Snowflake",
-    OAuthUrlRule(
-        check=check_snowflake_oauth_settings,
-        pin=pin_snowflake_oauth_urls,
-        settings=(ACCOUNT_IDENTIFIER_KEY,),
-    ),
-)

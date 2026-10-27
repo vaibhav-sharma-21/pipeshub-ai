@@ -12,8 +12,11 @@ from app.connectors.core.base.token_service.oauth_service import OAuthToken
 from app.connectors.core.base.token_service.token_refresh_service import (
     TokenRefreshService,
 )
-from app.connectors.sources.snowflake.oauth_urls import SNOWFLAKE_OAUTH_URL_ERROR
-from app.utils.oauth_config import check_oauth_url_settings, get_oauth_config
+from app.connectors.sources.snowflake.oauth_urls import (
+    SNOWFLAKE_OAUTH_URL_ERROR,
+    check_snowflake_oauth_settings,
+)
+from app.utils.oauth_config import get_oauth_config
 
 _ROUTER = "app.connectors.api.router"
 AUTHORIZE = "https://myorg-account_xyz.snowflakecomputing.com/oauth/authorize"
@@ -40,7 +43,6 @@ async def _urls(auth: dict[str, Any], shared: dict[str, Any] | None = None) -> t
             "org-1",
             AsyncMock(),
             logging.getLogger("test"),
-            registry_type="Snowflake",
         )
     oauth = get_oauth_config(flow)
     return oauth.authorize_url, oauth.token_url
@@ -106,8 +108,4 @@ async def test_refresh_uses_account_specific_token_url() -> None:
 )
 def test_invalid_account_identifier_is_rejected(account_identifier: str) -> None:
     with pytest.raises(ValueError, match="Snowflake account identifier"):
-        check_oauth_url_settings("Snowflake", {"accountIdentifier": account_identifier})
-
-
-def test_other_connectors_are_untouched() -> None:
-    check_oauth_url_settings("Jira", {"accountIdentifier": "not-used"})
+        check_snowflake_oauth_settings({"accountIdentifier": account_identifier})

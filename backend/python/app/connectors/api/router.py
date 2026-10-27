@@ -105,6 +105,7 @@ from app.connectors.core.registry.connector_registry import ConnectorRegistry
 from app.connectors.core.registry.filters import sync_filter_selection_problems
 from app.connectors.core.registry.auth_utils import include_jira_scope_enabled
 from app.connectors.sources.localKB.handlers.knowledge_hub_service import FOLDER_MIME_TYPES
+from app.connectors.sources.snowflake.oauth_urls import pin_snowflake_oauth_urls
 from app.connectors.services.kafka_service import KafkaService
 from app.connectors.services.vector_store_rebuild import (
     VectorStoreRebuildBusyError,
@@ -5754,6 +5755,15 @@ async def _build_oauth_flow_config(
     oauth_flow_config["scopes"] = _apply_confluence_optional_jira_scope(
         connector_type, auth_config, raw_scopes
     )
+
+    if connector_type.replace(" ", "").lower() == "snowflake":
+        try:
+            pin_snowflake_oauth_urls(oauth_flow_config)
+        except ValueError as e:
+            raise HTTPException(
+                status_code=HttpStatusCode.BAD_REQUEST.value,
+                detail=str(e),
+            ) from e
 
     return oauth_flow_config
 
